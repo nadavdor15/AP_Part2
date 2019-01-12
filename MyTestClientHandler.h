@@ -18,7 +18,7 @@ public:
 
 	virtual void handleClient(SockIS* sockIS, SockOS* SockOS) {
 		string problem;
-		sockIS->operator>>(problem);
+		while (sockIS->operator>>(problem) < 0) {}
 		while (problem.compare("end") != 0) {
 			std::stringstream ss;
 			std::string stringSolution;
@@ -42,10 +42,7 @@ public:
 			ss << solution;
 			getline(ss, stringSolution);
 			SockOS->operator<<(stringSolution);
-			// getting next problem from the client
-			do {
-				sockIS->operator>>(problem);
-			} while (problem.compare("") == 0);
+			while (sockIS->operator>>(problem) < 0) {}
 		}
 	}
 };

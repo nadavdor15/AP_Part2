@@ -3,14 +3,12 @@
 
 #include "Server.h"
 #include <thread>
-#include <mutex>
 
 using namespace server_side;
 
 class MySerialServer : public Server {
 	thread _t1;
-	static bool _stopServer;
-	static std::mutex _stopMutex;
+	static volatile bool _stopServer;
 	static void acceptClients(TcpSocket* socket, ClientHandler* clientHandler);
 
 public:

@@ -14,5 +14,5 @@ run2:
 	./a.out 12346
 run3:
 	./a.out 12347
-valgrind: clean clear compile
+valgrind:
 	valgrind --leak-check=full ./a.out 12345

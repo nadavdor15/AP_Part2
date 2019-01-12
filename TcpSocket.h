@@ -1,7 +1,6 @@
 #ifndef TCP_SOCKET_H
 #define TCP_SOCKET_H
 
-// #define _BSD_SOURCE
 #include <istream>
 #include <ostream>
 #include <iostream>
@@ -17,50 +16,32 @@
 #include <string.h>
 
 #include "SocketBuffer.h"
+#include "SockIOS.h"
 
 using namespace std;
 
 class TcpSocket {
-	int _socketID;
+	int _socketID = -1;
 	struct sockaddr_in _serv_addr, _cli_addr;
-	ostream* _os;
-	istream* _is;
+	SockOS* _os;
+	SockIS* _is;
 
 public:
-	TcpSocket() {
-		_socketID = socket(AF_INET, SOCK_STREAM, 0);
-		if (_socketID < 0) {
-			perror("Could not open socket");
-			exit(1);
-		}
-		cout << "Socket is now open" << endl;
-	}
-
+	TcpSocket();
 	void bindSocket(string address, int port);
-
-	void listenToClients(unsigned int clientNumber) const {
-		if (listen(_socketID, clientNumber) < 0) {
-			perror("Socket could not listen");
-			exit(1);
-		}
-		cout << "Server is now listenting to " << clientNumber << " clients" << endl;
-	}
-
+	void listenToClients(unsigned int clientNumber) const;
 	int acceptClient();
 
-	ostream* getOutputStream() const {
+	SockOS* getOutputStream() const {
 		return _os;
 	}
 
-	istream* getInputStream() const {
+	SockIS* getInputStream() const {
 		return _is;
 	}
 
-	~TcpSocket() {
-		delete _os->rdbuf(); // deleting the streambuf we gave _os in c'tor
-		delete _os;
-		// delete _is;
-	}
+	void closeSocket();
+	~TcpSocket();
 };
 
 #endif

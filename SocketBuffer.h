@@ -25,6 +25,8 @@ public:
 	virtual streambuf::int_type overflow(streambuf::int_type c) override {
 		return send(_sockID, &c, 2, 0);
 	}
+
+	virtual streamsize xsgetn(char_type* __s, streamsize __n) override;
 };
 
 #endif

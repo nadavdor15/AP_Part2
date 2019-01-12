@@ -28,3 +28,9 @@ streamsize SocketBuffer::xsputn(const char* s, streamsize n) {
 	free(str); // freeing allocated memory
 	return bytesSent;
 }
+
+streamsize SocketBuffer::xsgetn(char_type* __s, streamsize __n) {
+	int bytesReceived = recv(_sockID, __s, __n, 0);
+	__s[bytesReceived] = '\0';
+	return bytesReceived;
+}

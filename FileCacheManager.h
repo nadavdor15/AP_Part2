@@ -20,8 +20,8 @@ class FileCacheManager : public CacheManager<Problem, Solution> {
 			unsigned int index = line.find_first_of("$");
 			if (index != std::string::npos) {
 				key = line.substr(0, index);
-				value = line.substr(index);
-				solutions->at(key) = value;
+				value = line.substr(index + 1);
+				solutions->operator[](key) = value;
 			}
 		}
 		file.close();
@@ -30,7 +30,7 @@ class FileCacheManager : public CacheManager<Problem, Solution> {
 	void updateFile() {
 		std::ofstream file(_fileName);
 		for (auto it = _solutions.begin(); it != _solutions.end(); ++it) {
-			std::string line = it->first + "$" + it->second;
+			std::string line = it->first + "$" + it->second + "\n";
 			file << line;
 		}
 		file.close();

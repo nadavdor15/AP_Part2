@@ -24,14 +24,14 @@ public:
 			std::string stringSolution;
 			Solution solution;
 			if (_cacheManager->hasSolution(problem)) {
-				std::cout << "Solution was found" << std::endl;
+				std::cout << "Solution for problem: '" << problem << "' was found" << std::endl;
 				try {
 					solution = _cacheManager->getSolution(problem);
 				} catch (const char* e) {
 					std::cout << e << std::endl;
 				}
 			} else {
-				std::cout << "Solution was NOT found" << std::endl;
+				std::cout << "Solution for problem: '" << problem << "' was NOT found" << std::endl;
 				solution = _solver->solve(problem);
 				try {
 					_cacheManager->saveSolution(problem, solution);
@@ -43,7 +43,9 @@ public:
 			getline(ss, stringSolution);
 			SockOS->operator<<(stringSolution);
 			// getting next problem from the client
-			sockIS->operator>>(problem);
+			do {
+				sockIS->operator>>(problem);
+			} while (problem.compare("") == 0);
 		}
 	}
 };

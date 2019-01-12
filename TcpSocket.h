@@ -40,7 +40,15 @@ public:
 		return _is;
 	}
 
+	int setTimeout(int sec, int usec = 0) {
+		timeval timeout;
+		timeout.tv_sec = sec;
+		timeout.tv_usec = usec;
+		return setsockopt(_socketID, SOL_SOCKET, SO_RCVTIMEO, (char*) &timeout, sizeof(timeout));
+	}
+
 	void closeSocket();
+
 	~TcpSocket();
 };
 

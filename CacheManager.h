@@ -5,9 +5,10 @@ template<class Problem, class Solution>
 class CacheManager {
 
 public:
-	bool hasSolution(Problem problem);
-	Solution getSolution(Problem problem);
-	bool saveSolution(Problem problem, Solution solution);
+	virtual bool hasSolution(Problem problem) = 0;
+	virtual Solution getSolution(Problem problem) = 0;
+	virtual void saveSolution(Problem problem, Solution solution) = 0;
+	virtual ~CacheManager() {}
 };
 
 #endif

@@ -31,10 +31,8 @@ void TcpSocket::bindSocket(string address, int port) {
 int TcpSocket::acceptClient() {
 	int clilen = sizeof(_cli_addr);
 	int newSocket = accept(_socketID, (struct sockaddr*) &_cli_addr, (socklen_t*) &clilen);
-	if (newSocket < 0) {
-		perror("Could not accept a client");
-		exit(1);
-	}
+	if (newSocket < 0)
+		return newSocket;
 	cout << "Accepted the client: " << inet_ntoa(_cli_addr.sin_addr) << ", " << _cli_addr.sin_port << endl;
 	streambuf* socketBuffer = new SocketBuffer(newSocket);
 	_os = new SockOS(socketBuffer);

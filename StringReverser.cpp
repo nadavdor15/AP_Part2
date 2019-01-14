@@ -1,11 +1,12 @@
-#include "StringReverser.h"
 #include <iostream>
+#include "StringReverser.h"
+#include "StringSolution.h"
 
-std::string StringReverser::solve(std::string problem) {
+StringSolution* StringReverser::solve(std::string problem) {
 	int length = problem.length();
 	std::string solution(problem);
 	for (int i = 0; i <= length; i++) {
 		solution[i] = problem[length - i - 1];
 	}
-	return solution;
+	return new StringSolution(solution);
 }

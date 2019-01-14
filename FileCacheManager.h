@@ -8,8 +8,8 @@
 #include <fstream>
 #include <map>
 
-template<class Problem, class Solution>
-class FileCacheManager : public CacheManager<Problem, Solution> {
+template<class Problem, class Sol>
+class FileCacheManager : public CacheManager<Problem, Sol> {
 	std::map<std::string, std::string> _solutions;
 	std::string _fileName;
 
@@ -50,33 +50,26 @@ public:
 		return (_solutions.find(stringProblem) != _solutions.end());
 	}
 
-	Solution getSolution(Problem problem) {
+	Sol* getSolution(Problem problem) {
 		if (!hasSolution(problem))
 			throw "There is no solution for this problem";
-		Solution s;
 		std::stringstream ss;
 		std::string stringProblem;
 		ss << problem;
 		getline(ss, stringProblem);
-		ss.clear();
-		ss << _solutions.at(stringProblem);
-		getline(ss, s);
-		return s;
+		return new Sol(_solutions.at(stringProblem));
 	}
 
-	void saveSolution(Problem problem, Solution solution) {
+	void saveSolution(Problem problem, Sol* sol) {
 		if (hasSolution(problem)) {
 			throw "This solution is already saved";
 		}
 		std::stringstream ss;
 		std::string stringProblem;
-		std::string stringSolution;
+		std::string stringSol = sol->toString();
 		ss << problem;
 		getline(ss, stringProblem);
-		ss.clear();
-		ss << solution;
-		getline(ss, stringSolution);
-		_solutions[stringProblem] = stringSolution;
+		_solutions[stringProblem] = stringSol;
 	}
 
 	~FileCacheManager() {

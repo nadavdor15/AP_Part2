@@ -17,7 +17,7 @@ public:
 	SockIS(streambuf* streamBuf): istream(streamBuf) {}
 
 	int operator>>(string& str) {
-		char buf[2048];
+		char buf[2048] = {'0'};
 		int bytesReceived = this->rdbuf()->sgetn(buf, 2048);
 		str = std::string(buf);
 		return bytesReceived;
@@ -28,7 +28,7 @@ class SockOS : public ostream {
 public:
 	SockOS(streambuf* streamBuf): ostream(streamBuf) {}
 
-	int operator<<(string& str) {
+	int operator<<(string str) {
 		stringstream ss;
 		const char* t = str.c_str();
 		ss << (void*) t;

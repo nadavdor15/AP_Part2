@@ -7,41 +7,38 @@
 #include <sstream>
 #include <iostream>
 
-template <class Problem, class Solution>
+template <class Problem, class Sol>
 class MyTestClientHandler : public ClientHandler {
-	Solver<Problem, Solution>* _solver;
-	CacheManager<Problem, Solution>* _cacheManager;
+	Solver<Problem, Sol>* _solver;
+	CacheManager<Problem, Sol>* _cacheManager;
 public:
-	MyTestClientHandler(Solver<Problem, Solution>* solver,
-						CacheManager<Problem, Solution>* cacheManager):
+	MyTestClientHandler(Solver<Problem, Sol>* solver,
+						CacheManager<Problem, Sol>* cacheManager):
 						_solver(solver), _cacheManager(cacheManager) {}
 
-	virtual void handleClient(SockIS* sockIS, SockOS* SockOS) {
+	virtual void handleClient(SockIS* sockIS, SockOS* sockOS) {
 		string problem;
 		while (sockIS->operator>>(problem) < 0) {}
 		while (problem.compare("end") != 0) {
-			std::stringstream ss;
-			std::string stringSolution;
-			Solution solution;
+			Sol* sol;
 			if (_cacheManager->hasSolution(problem)) {
 				std::cout << "Solution for problem: '" << problem << "' was found" << std::endl;
 				try {
-					solution = _cacheManager->getSolution(problem);
+					sol = _cacheManager->getSolution(problem);
 				} catch (const char* e) {
 					std::cout << e << std::endl;
 				}
 			} else {
 				std::cout << "Solution for problem: '" << problem << "' was NOT found" << std::endl;
-				solution = _solver->solve(problem);
+				sol = _solver->solve(problem);
 				try {
-					_cacheManager->saveSolution(problem, solution);
+					_cacheManager->saveSolution(problem, sol);
 				} catch (const char* e) {
 					std::cout << e << std::endl;
 				}
 			}
-			ss << solution;
-			getline(ss, stringSolution);
-			SockOS->operator<<(stringSolution);
+			sockOS->operator<<(sol->toString());
+			delete sol;
 			while (sockIS->operator>>(problem) < 0) {}
 		}
 	}

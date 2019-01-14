@@ -1,10 +1,10 @@
 #ifndef SOLVER_H
 #define SOLVER_H
 
-template<class Problem, class Solution>
+template<class Problem, class Sol>
 class Solver {
 public:
-	virtual Solution solve(Problem problem) = 0;
+	virtual Sol* solve(Problem problem) = 0;
 	virtual ~Solver() {}
 };
 

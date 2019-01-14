@@ -2,11 +2,12 @@
 #define STRING_REVERSER_H
 
 #include "Solver.h"
+#include "StringSolution.h"
 #include <string>
 
-class StringReverser : public Solver<std::string, std::string> {
+class StringReverser : public Solver<std::string, StringSolution> {
 public:
-	virtual std::string solve(std::string problem);
+	virtual StringSolution* solve(std::string problem);
 };
 
 #endif

@@ -5,7 +5,7 @@
 
 class ClientHandler {
 public:
-	virtual void handleClient(SockIS* SockIS, SockOS* SockOS) = 0;
+	virtual void handleClient(SockIS* sockIS, SockOS* sockOS) = 0;
 	virtual ~ClientHandler() {}
 };
 

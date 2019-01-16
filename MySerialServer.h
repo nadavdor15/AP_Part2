@@ -14,6 +14,9 @@ class MySerialServer : public Server {
 public:
 	virtual void open(int port, ClientHandler* clientHandler);
 	virtual void stop();
+	virtual ~MySerialServer() {
+		this->stop();
+	}
 };
 
 #endif

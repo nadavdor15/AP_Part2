@@ -17,7 +17,6 @@ public:
 	static vector<vector<string>> splitVector(const vector<string>& vec, const char* delim);
 	static vector<string> removeUntill(vector<string> v, const string s);
 	static int nextIndexOf(vector<string>::iterator itr, const string s, vector<string>::iterator end);
-
 };
 
 #endif

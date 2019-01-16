@@ -2,12 +2,22 @@
 #define STRING_REVERSER_H
 
 #include "Solver.h"
-#include "StringSolution.h"
+#include "Solution.h"
 #include <string>
 
-class StringReverser : public Solver<std::string, StringSolution> {
+class StringDecorator : public Solution {
+	std::string _str;
 public:
-	virtual StringSolution* solve(std::string problem);
+	StringDecorator(std::string str): _str(str) {}
+
+	std::string toString() {
+		return _str;
+	}
+};
+
+class StringReverser : public Solver<StringDecorator, StringDecorator> {
+public:
+	virtual StringDecorator* solve(StringDecorator problem);
 };
 
 #endif

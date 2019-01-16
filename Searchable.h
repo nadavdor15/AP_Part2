@@ -7,6 +7,7 @@
 
 template<class T>
 class Searchable {
+protected:
 	State<T>* _initialState;
 	State<T>* _goalState;
 

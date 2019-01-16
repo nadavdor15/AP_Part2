@@ -22,14 +22,14 @@ public:
 		while (problem.compare("end") != 0) {
 			Sol* sol;
 			if (_cacheManager->hasSolution(problem)) {
-				std::cout << "Solution for problem: '" << problem << "' was found" << std::endl;
+				// std::cout << "Solution for problem: '" << problem << "' was found" << std::endl;
 				try {
 					sol = _cacheManager->getSolution(problem);
 				} catch (const char* e) {
 					std::cout << e << std::endl;
 				}
 			} else {
-				std::cout << "Solution for problem: '" << problem << "' was NOT found" << std::endl;
+				// std::cout << "Solution for problem: '" << problem << "' was NOT found" << std::endl;
 				sol = _solver->solve(problem);
 				try {
 					_cacheManager->saveSolution(problem, sol);

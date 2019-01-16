@@ -24,7 +24,7 @@ void MySerialServer::acceptClients(TcpSocket* socket, ClientHandler* clientHandl
 	while (!_stopServer) {
 		if (socket->acceptClient() < 0) {
 			if (errno == EAGAIN || errno == EWOULDBLOCK) {
-				std::cout << "Timeout on accept" << std::endl;
+				// std::cout << "Timeout on accept" << std::endl;
 				_stopServer = true;
 				break;
 			} else {

@@ -2,9 +2,9 @@
 #define FILE_CACHE_MANAGER_H
 
 #include "CacheManager.h"
+#include "StringHelper.h"
 #include <thread>
-#include <sstream>
-#include <iostream>
+#include <vector>
 #include <fstream>
 #include <map>
 
@@ -13,16 +13,29 @@ class FileCacheManager : public CacheManager<Problem, Sol> {
 	std::map<std::string, std::string> _solutions;
 	std::string _fileName;
 
-	static void updateMap(std::string fileName, std::map<std::string, std::string>* solutions) {
-		std::ifstream file(fileName);
-		std::string line, key, value;
-		while(getline(file, line)) {
-			unsigned int index = line.find_first_of("$");
-			if (index != std::string::npos) {
-				key = line.substr(0, index);
-				value = line.substr(index + 1);
-				solutions->operator[](key) = value;
-			}
+
+	/*
+	* Map file protocol:
+	* <problemm>
+	* \n$\n
+	* <solition>
+	* \n$$\n
+	* the file must end with an empty line!
+	* */
+	void updateMap() {
+		std::ifstream file(_fileName);
+		std::string str(std::istreambuf_iterator<char>(file), {});
+		str  = "\n" + str;
+		str.erase(--str.end());
+		std::vector<std::string> vec = StringHelper::split(str, "$$");
+		for (auto it = vec.begin(); it != vec.end(); ++it) {
+			string key = *it;
+			key.erase(key.begin());
+			key.erase(--key.end());
+			string value = *++it;
+			value.erase(value.begin());
+			value.erase(--value.end());
+			_solutions.operator[](key) = value;
 		}
 		file.close();
 	}
@@ -30,7 +43,7 @@ class FileCacheManager : public CacheManager<Problem, Sol> {
 	void updateFile() {
 		std::ofstream file(_fileName);
 		for (auto it = _solutions.begin(); it != _solutions.end(); ++it) {
-			std::string line = it->first + "$" + it->second + "\n";
+			std::string line = it->first + "\n$\n" + it->second + "\n$$\n" ;
 			file << line;
 		}
 		file.close();
@@ -38,38 +51,24 @@ class FileCacheManager : public CacheManager<Problem, Sol> {
 
 public:
 	FileCacheManager(const std::string fileName): _fileName(fileName) {
-		std::thread t1(this->updateMap, fileName, &_solutions);
-		t1.detach();
+		this->updateMap();
 	}
 
 	bool hasSolution(Problem problem) {
-		std::string stringProblem;
-		std::stringstream ss;
-		ss << problem;
-		getline(ss, stringProblem);
-		return (_solutions.find(stringProblem) != _solutions.end());
+		return (_solutions.find(problem.toString()) != _solutions.end());
 	}
 
 	Sol* getSolution(Problem problem) {
 		if (!hasSolution(problem))
 			throw "There is no solution for this problem";
-		std::stringstream ss;
-		std::string stringProblem;
-		ss << problem;
-		getline(ss, stringProblem);
-		return new Sol(_solutions.at(stringProblem));
+		return new Sol(_solutions.at(problem.toString()));
 	}
 
 	void saveSolution(Problem problem, Sol* sol) {
 		if (hasSolution(problem)) {
 			throw "This solution is already saved";
 		}
-		std::stringstream ss;
-		std::string stringProblem;
-		std::string stringSol = sol->toString();
-		ss << problem;
-		getline(ss, stringProblem);
-		_solutions[stringProblem] = stringSol;
+		_solutions[problem.toString()] = sol->toString();
 	}
 
 	~FileCacheManager() {

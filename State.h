@@ -4,12 +4,16 @@
 template<class T>
 class State {
 	double _cost;
-	State<T>* _parent;
 	T _value;
+	State<T>* _parent;
 public:
 	// CTOR
-	State(T value) {
-		_value = value;
+	State(T value): _value(value), _parent(nullptr) {}
+
+	State(const State<T>& state) {
+		_cost = state.getCost();
+		_value = state.getValue();
+		_parent = state.getParent();
 	}
 
 	// getters and setters:
@@ -17,24 +21,29 @@ public:
 		_parent = parent;
 	}
 	
-	State<T>* getParent() {
+	State<T>* getParent() const {
 		return _parent;
+	}
+
+	T getValue() const {
+		return _value;
 	}
 	
 	void setCost(double cost) {
 		_cost = cost;
 	}
 
-	double getCost() {
+	double getCost() const {
 		return _cost;
 	}
 
-	bool equals(State<T>* other) {
-		return (this == other);
+	bool equals(State<T> other) {
+		return (this->_value == other.getValue());
 	}
 
-	bool equals(State<T> other) {
-		return (this == &other);
+	// THE OPPOSITE OF < in purose
+	bool operator<(const State<T>& other) const {
+		return _value > other.getValue();
 	}
 };
 

@@ -28,6 +28,7 @@ class TcpSocket {
 
 public:
 	TcpSocket();
+	TcpSocket(int socketID): _socketID(socketID) {}
 	void bindSocket(string address, int port);
 	void listenToClients(unsigned int clientNumber) const;
 	int acceptClient();

@@ -75,7 +75,7 @@ public:
 		return cost;
 	}
 
-	virtual double estiatedCostToEnd(State<Point>* state) const {
+	virtual double getEstimatedCostToEnd(State<Point>* state) const {
 		Point p1 = state->getValue();
 		Point p2 = _goalState->getValue();
 		double x1 = p1.getX(), x2 = p2.getX();

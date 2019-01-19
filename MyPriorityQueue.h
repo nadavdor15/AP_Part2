@@ -56,6 +56,10 @@ public:
 	bool empty() const {
 		return _queue.empty();
 	}
+
+	int size() const {
+		return _queue.size();
+	}
 };
 
 #endif

@@ -1,0 +1,13 @@
+from socket import socket
+import time
+s = socket()
+s.connect(("127.0.0.1",12345))
+s.send("1,31,998,4564,34,23"
+s.send("1,31,998,4564,34,23")
+s.send("1,31,998,4564,34,23")
+s.send("1,31,998,4564,34,23")
+s.send("1,1")
+s.send("3,3")
+s.send("end")
+data = s.recv(1024)
+print data

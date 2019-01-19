@@ -4,12 +4,16 @@
 #include "MyClientHandler.h"
 #include "SearchSolver.h"
 #include "BestFirstSearch.h"
+#include "DepthFirstSearch.h"
+#include "BreadthFirstSearch.h"
+#include "AStarSearch.h"
+#include "Point.h"
 
 using namespace std;
 
 int main(int argc, char* argv[]) {
 	Server* server = new MyParallelServer();
-	Searcher<Point>* searcher = new BestFirstSearch();
+	Searcher<Point>* searcher = new AStarSearch<Point>();
 	Solver<SearchableMatrix, SearchSolution>* solver = new SearchSolver<Point>(searcher);
 	CacheManager<SearchableMatrix, SearchSolution>* cacheManager = new FileCacheManager<SearchableMatrix, SearchSolution>("sol.txt");
 	ClientHandler* clientHandler = new MyClientHandler<SearchableMatrix, SearchSolution>(solver, cacheManager);

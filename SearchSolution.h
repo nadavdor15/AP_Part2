@@ -18,8 +18,10 @@ public:
 
 	virtual std::string toString() {
 		std::string path = "";
+		if (_path.size() == 0)
+			return path;
 		auto it = _path.begin();
-		for (; it != --_path.end(); it++)
+		for (; it != --_path.end(); ++it)
 			path += *it + ",";
 		path += *it;
 		return path;

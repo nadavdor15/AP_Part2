@@ -6,6 +6,9 @@
 #include "CacheManager.h"
 #include <iostream>
 
+using std::cout;
+using std::endl;
+
 template <class Problem, class Sol>
 class MyClientHandler : public ClientHandler {
 	Solver<Problem, Sol>* _solver;
@@ -27,16 +30,18 @@ public:
 		Problem* prob = new Problem(problem);
 		if (_cacheManager->hasSolution(prob)) {
 			try {
+				cout << "Solution was found" << endl;
 				sol = _cacheManager->getSolution(prob);
 			} catch (const char* e) {
-				std::cout << e << std::endl;
+				cout << e << endl;
 			}
 		} else {
+			cout << "No solution found" << endl;
 			sol = _solver->solve(prob);
 			try {
 				_cacheManager->saveSolution(prob, sol);
 			} catch (const char* e) {
-				std::cout << e << std::endl;
+				cout << e << endl;
 			}
 		}
 		sockOS->operator<<(sol->toString());

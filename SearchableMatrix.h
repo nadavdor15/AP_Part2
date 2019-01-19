@@ -102,7 +102,9 @@ public:
 			stringFormat.erase(--stringFormat.end());
 			stringFormat += "\n";
 		}
-		stringFormat.erase(--stringFormat.end());
+		stringFormat += _initialState->getValue().toString();
+		stringFormat += "\n";
+		stringFormat += _goalState->getValue().toString();
 		return stringFormat;
 	}
 

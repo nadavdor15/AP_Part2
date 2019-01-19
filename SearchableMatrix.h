@@ -6,6 +6,7 @@
 #include "Point.h"
 #include <string>
 #include <vector>
+#include <cmath>
 
 #include <iostream>
 
@@ -65,13 +66,21 @@ public:
 		return path;
 	}
 
-	virtual int getPathCost(State<Point>* state) const {
-		int cost = 0;
+	virtual double getPathCost(State<Point>* state) const {
+		double cost = 0;
 		const State<Point>* current = state;
 		do {
 			cost += current->getCost();
 		} while ((current = current->getParent()) != nullptr);
 		return cost;
+	}
+
+	virtual double estiatedCostToEnd(State<Point>* state) const {
+		Point p1 = state->getValue();
+		Point p2 = _goalState->getValue();
+		double x1 = p1.getX(), x2 = p2.getX();
+		double y1 = p1.getY(), y2 = p2.getY();
+		return (std::abs(x1 - x2) + std::abs(y1 - y2));
 	}
 
 	virtual std::vector<State<Point>*> getNeighbors(State<Point>* state) const {

@@ -21,8 +21,8 @@ public:
 	}
 
 	virtual std::vector<std::string> getPath(State<T>* end) const = 0;
-	virtual std::vector<State<T>*> getNeighbors(State<T>* state) const = 0;
-	virtual int getPathCost(State<T>* state) const = 0;
+	virtual double getPathCost(State<T>* state) const = 0;
+	virtual double estiatedCostToEnd(State<T>* state) const = 0;
 	virtual ~Searchable() {}
 };
 

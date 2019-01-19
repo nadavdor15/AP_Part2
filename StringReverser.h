@@ -17,7 +17,7 @@ public:
 
 class StringReverser : public Solver<StringDecorator, StringDecorator> {
 public:
-	virtual StringDecorator* solve(StringDecorator problem);
+	virtual StringDecorator* solve(StringDecorator* problem);
 };
 
 #endif

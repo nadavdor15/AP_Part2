@@ -2,21 +2,18 @@
 #define SEARCH_SOLVER_H
 
 #include "Searcher.h"
+#include "SearchableMatrix.h"
 #include "SearchSolution.h"
 #include "Solver.h"
 
 // problem is searchable.
 template<class T>
-class SearchSolver : public Solver<Searchable<T>, SearchSolution> {
-	/*
-		virtual Solution solve(Problem problem) = 0;
-	virtual ~Solver() {}
-	*/
+class SearchSolver : public Solver<SearchableMatrix, SearchSolution> {
 	Searcher<T>* _searcher;
 public:
 	SearchSolver(Searcher<T>* searcher): _searcher(searcher) {}
 
-	virtual SearchSolution* solve(Searchable<T> searchable) {
+	virtual SearchSolution* solve(SearchableMatrix* searchable) {
 		return _searcher->search(searchable);
 	}
 };

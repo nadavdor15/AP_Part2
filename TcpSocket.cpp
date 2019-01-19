@@ -8,7 +8,7 @@ TcpSocket::TcpSocket(): _os(nullptr), _is(nullptr) {
 		perror("Could not open socket");
 		exit(1);
 	}
-	// cout << "Socket is now open" << endl;
+	cout << "Socket is now open" << endl;
 }
 
 void TcpSocket::bindSocket(string address, int port) {
@@ -25,7 +25,7 @@ void TcpSocket::bindSocket(string address, int port) {
     	perror("ERROR while binding");
     	exit(1);
 	}
-	// cout << "Server is now binded to (" << inet_ntoa(_serv_addr.sin_addr) << ", " << port << ")" << endl;
+	cout << "Server is now binded to (" << inet_ntoa(_serv_addr.sin_addr) << ", " << port << ")" << endl;
 }
 
 int TcpSocket::acceptClient() {
@@ -33,7 +33,7 @@ int TcpSocket::acceptClient() {
 	int newSocket = accept(_socketID, (struct sockaddr*) &_cli_addr, (socklen_t*) &clilen);
 	if (newSocket < 0)
 		return newSocket;
-	// cout << "Accepted the client: " << inet_ntoa(_cli_addr.sin_addr) << ", " << _cli_addr.sin_port << endl;
+	cout << "Accepted the client: " << inet_ntoa(_cli_addr.sin_addr) << ", " << _cli_addr.sin_port << endl;
 	streambuf* socketBuffer = new SocketBuffer(newSocket);
 	_os = new SockOS(socketBuffer);
 	_is = new SockIS(socketBuffer);
@@ -45,7 +45,7 @@ void TcpSocket::listenToClients(unsigned int clientNumber) const {
 		perror("Socket could not listen");
 		exit(1);
 	}
-	// cout << "Server is now listenting to " << clientNumber << " clients" << endl;
+	cout << "Server is now listenting to " << clientNumber << " clients" << endl;
 }
 
 void TcpSocket::closeSocket() {

@@ -1,13 +1,18 @@
 #ifndef STATE_H
 #define STATE_H
 
+#include <iostream>
+
 template<class T>
 class State {
+protected:
 	double _cost;
 	T _value;
 	State<T>* _parent;
 public:
 	// CTOR
+	State(): _parent(nullptr) {}
+
 	State(T value): _value(value), _parent(nullptr) {}
 
 	State(const State<T>& state) {
@@ -37,13 +42,24 @@ public:
 		return _cost;
 	}
 
-	bool equals(State<T> other) {
-		return (this->_value == other.getValue());
+	bool operator==(const State<T> other) {
+		return (_value == other.getValue());
 	}
 
-	// THE OPPOSITE OF < in purose
+	bool equals(const State<T>* other) {
+		return (_value == other->getValue());
+	}
+
+	bool equals(const State<T> other) const {
+		return (_value == other.getValue());
+	}
+
 	bool operator<(const State<T>& other) const {
-		return _value > other.getValue();
+		return !(_value == other.getValue());
+	}
+
+	bool operator!=(const State<T>& other) const {
+		return !this->operator==(other);
 	}
 };
 

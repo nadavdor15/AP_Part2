@@ -9,10 +9,8 @@ class ClientHandlerTask : public Task {
 	ClientHandler* _clientHandler;
 	TcpSocket* _socket;
 public:
-	ClientHandlerTask(ClientHandler* clientHandler,
-					  TcpSocket* socket):
-					  _clientHandler(clientHandler),
-					  _socket(socket) {}
+	ClientHandlerTask(ClientHandler* clientHandler, TcpSocket* socket):
+					  _clientHandler(clientHandler), _socket(socket) {}
 
 	void execute() {
 		SockOS* os = _socket->getOutputStream();

@@ -1,6 +1,8 @@
 #ifndef SEARCH_SOLUTION_H
 #define SEARCH_SOLUTION_H
 
+#include <iostream>
+
 #include "Solution.h"
 #include "StringHelper.h"
 #include <vector>

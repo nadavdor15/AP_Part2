@@ -10,47 +10,95 @@
 #include <iostream>
 
 class SearchableMatrix : public Searchable<Point> {
-	std::vector<std::vector<double>> _cellsVector;
-	std::vector<std::vector<State<Point>*>> _pointsVector;
+	std::vector<std::vector<State<Point>*>> _cells;
 	int _rows, _cols;
 public:
 	SearchableMatrix(const std::string str) {
+		// generating rows
 		std::vector<std::string> rows = StringHelper::split(str, "\n");
-		std::vector<std::string> startPoint = StringHelper::split(rows.front(), ",");
+		// generating indexes for initialize and goal states
+		std::vector<std::string> endPoint = StringHelper::split(rows.back(), ",");
 		rows.erase(--rows.end());
-		std::vector<std::string> endPoint = StringHelper::split(rows.front(), ",");
+		std::vector<std::string> startPoint = StringHelper::split(rows.back(), ",");
 		rows.erase(--rows.end());
-		_initialState = new State<Point>(Point(startPoint[0], startPoint[1]));
-		_goalState = new State<Point>(Point(endPoint[0], endPoint[1]));
-		std::vector<std::vector<std::string>> cells;
-		for (std::string s : rows) {
-			std::vector<std::string> singleRow = StringHelper::split(s, ",");
-			cells.push_back(singleRow);
-		}
-		int i = 0, j = 0;
-		for (std::vector<std::string> vec : cells) {
-			std::vector<double> row;
-			std::vector<State<Point>*> pointsRow;
-			for (std::string s : vec) {
-				row.push_back(std::stod(s));
+		// for each row we add it's states to the matrix _cells
+		int i = 0, j;
+		for (std::string row : rows) {
+			std::vector<State<Point>*> singleRow;
+			j = 0;
+			for (std::string s : StringHelper::split(row, ",")) {
 				State<Point>* state = new State<Point>(Point(i, j));
 				state->setCost(std::stod(s));
-				pointsRow.push_back(state);
+				singleRow.push_back(state);
 				j++;
 			}
-			_cellsVector.push_back(row);
-			_pointsVector.push_back(pointsRow);
+			_cells.push_back(singleRow);
 			i++;
 		}
+		// detemining sizes of the matrix
 		_rows = rows.size();
-		_cols = rows[0].size();
+		_cols = _cells[0].size();
+		// getting the initialize and goal states by the indexes
+		try {
+			_initialState = (_cells.begin() + std::stoi(startPoint[0]))->at(std::stoi(startPoint[1]));
+			_goalState = (_cells.begin() + std::stoi(endPoint[0]))->at(std::stoi(endPoint[1]));
+		} catch (...) {
+			std::cout << "Problem with initial and goal indexes" << std::endl;
+			exit(1);
+		}
 	}
 
-	std::string toString() {
+	virtual std::vector<std::string> getPath(State<Point>* state) const {
+		std::vector<std::string> path;
+		State<Point>* parent, *current = state;
+		while ((parent = current->getParent()) != nullptr) {
+			if (parent->getValue().getX() < current->getValue().getX())
+				path.insert(path.begin(), "down");
+			else if (parent->getValue().getX() > current->getValue().getX())
+				path.insert(path.begin(), "up");
+			else if (parent->getValue().getY() < current->getValue().getY())
+				path.insert(path.begin(), "right");
+			else if (parent->getValue().getY() > current->getValue().getY())
+				path.insert(path.begin(), "left");
+			current = parent;
+		}
+		return path;
+	}
+
+	virtual int getPathCost(State<Point>* state) const {
+		int cost = 0;
+		const State<Point>* current = state;
+		do {
+			cost += current->getCost();
+		} while ((current = current->getParent()) != nullptr);
+		return cost;
+	}
+
+	virtual std::vector<State<Point>*> getNeighbors(State<Point>* state) const {
+		int x = state->getValue().getX();
+		int y = state->getValue().getY();
+		std::vector<State<Point>*> neighbors;
+		auto thisRow = _cells.begin() + x;
+		if (y > 0)
+			neighbors.push_back(thisRow->operator[](y - 1));
+		if (y < _cols - 1)
+			neighbors.push_back(thisRow->operator[](y + 1));
+		if (x > 0) {
+			auto upperRow = _cells.begin() + x - 1;
+			neighbors.push_back(upperRow->operator[](y));
+		}
+		if (x < _rows - 1) {
+			auto lowerRow = _cells.begin() + x + 1;
+			neighbors.push_back(lowerRow->operator[](y));
+		}
+		return neighbors;
+	}
+
+	std::string toString() const {
 		std::string stringFormat = "";
-		for (std::vector<double> vec : _cellsVector) {
-			for (double cell : vec)
-				stringFormat += std::to_string(cell) + ",";
+		for (std::vector<State<Point>*> row : _cells) {
+			for (State<Point>* cell : row)
+				stringFormat += std::to_string(cell->getCost()) + ",";
 			stringFormat.erase(--stringFormat.end());
 			stringFormat += "\n";
 		}
@@ -58,49 +106,11 @@ public:
 		return stringFormat;
 	}
 
-	virtual std::vector<std::string> getPath(State<Point>* end) {
-		std::vector<std::string> path;
-		State<Point>* parent, *current = end;
-		while ((parent = current->getParent()) != nullptr) {
-			if (parent->getValue().getX() < current->getValue().getX())
-				path.push_back("right");
-			else if (parent->getValue().getX() > current->getValue().getX())
-				path.push_back("left");
-			if (parent->getValue().getY() < current->getValue().getY())
-				path.push_back("down");
-			else if (parent->getValue().getY() > current->getValue().getY())
-				path.push_back("up");
-			current = parent;
-		}
-		return path;
-	}
-
-	virtual std::vector<State<Point>*> getNeighbors(State<Point>* state) {
-		int x = state->getValue().getX();
-		int y = state->getValue().getY();
-		std::vector<State<Point>*> a;
-		if (y > 0) {
-			auto upperRow = _pointsVector.begin() + y - 1;
-			if (x > 0)
-				a.push_back(upperRow->operator[](x - 1));
-			if (x < _cols - 1)
-				a.push_back(upperRow->operator[](x + 1));
-		}
-		if (y < _rows - 1) {
-			auto lowerRow = _pointsVector.begin() + y + 1;
-			if (x > 0)
-				a.push_back(lowerRow->operator[](x - 1));
-			if (x < _cols - 1)
-				a.push_back(lowerRow->operator[](x + 1));
-		}
-		return a;
-	}
-
 	~SearchableMatrix() {
-		if (_initialState != nullptr)
-			delete _initialState;
-		if (_goalState != nullptr)
-			delete _goalState;
+		for (std::vector<State<Point>*> row : _cells) {
+			for (State<Point>* cell : row)
+				delete cell;
+		}
 	}
 };
 

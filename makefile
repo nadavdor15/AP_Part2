@@ -1,9 +1,10 @@
-all1: clean clear compile run1
-all2: clean clear compile run2
-all3: clean clear compile run3
+all1: clean compile run1
+all2: clean compile run2
+all3: clean compile run3
 
-clean:
+clean1: 
 	rm -f *.gch
+clean: clean1 clear
 compile: clean clear
 	g++ *.cpp *.h -std=c++14 -Wall -pthread
 clear:

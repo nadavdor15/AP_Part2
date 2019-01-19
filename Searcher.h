@@ -1,7 +1,7 @@
 #ifndef SEARCHER_H
 #define SEARCHER_H 
 
-#include "Solution.h"
+#include "SearchSolution.h"
 #include "Searchable.h"
 
 template<class T>
@@ -10,7 +10,7 @@ protected:
 	int _numOfNodesEvaluated;
 
 public:
-	virtual Solution* search(Searchable<T>* searchable) = 0;
+	virtual SearchSolution* search(Searchable<T>* searchable) = 0;
 	int getNumOfNodesEvaluated() {
 		return _numOfNodesEvaluated;
 	}

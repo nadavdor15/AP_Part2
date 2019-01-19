@@ -3,16 +3,15 @@
 
 #include "CacheManager.h"
 #include "StringHelper.h"
-#include <thread>
 #include <vector>
 #include <fstream>
 #include <map>
+#include <iostream>
 
 template<class Problem, class Sol>
 class FileCacheManager : public CacheManager<Problem, Sol> {
 	std::map<std::string, std::string> _solutions;
 	std::string _fileName;
-
 
 	/*
 	* Map file protocol:
@@ -54,21 +53,21 @@ public:
 		this->updateMap();
 	}
 
-	bool hasSolution(Problem problem) {
-		return (_solutions.find(problem.toString()) != _solutions.end());
+	bool hasSolution(Problem* problem) {
+		return (_solutions.find(problem->toString()) != _solutions.end());
 	}
 
-	Sol* getSolution(Problem problem) {
+	Sol* getSolution(Problem* problem) {
 		if (!hasSolution(problem))
 			throw "There is no solution for this problem";
-		return new Sol(_solutions.at(problem.toString()));
+		return new Sol(_solutions.at(problem->toString()));
 	}
 
-	void saveSolution(Problem problem, Sol* sol) {
+	void saveSolution(Problem* problem, Sol* sol) {
 		if (hasSolution(problem)) {
 			throw "This solution is already saved";
 		}
-		_solutions[problem.toString()] = sol->toString();
+		_solutions[problem->toString()] = sol->toString();
 	}
 
 	~FileCacheManager() {

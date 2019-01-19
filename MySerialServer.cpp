@@ -8,9 +8,8 @@ bool volatile MySerialServer::_stopServer;
 void MySerialServer::open(int port, ClientHandler* clientHandler) {
 	_socket.bindSocket("", port);
 	_socket.listenToClients(5);
-	_socket.setTimeout(10);
+	_socket.setTimeout(60);
 	_t1 = thread(acceptClients, &_socket, clientHandler);
-	// _t1.detach();
 	_t1.join();
 }
 
@@ -24,7 +23,7 @@ void MySerialServer::acceptClients(TcpSocket* socket, ClientHandler* clientHandl
 	while (!_stopServer) {
 		if (socket->acceptClient() < 0) {
 			if (errno == EAGAIN || errno == EWOULDBLOCK) {
-				// std::cout << "Timeout on accept" << std::endl;
+				std::cout << "Timeout on accept" << std::endl;
 				_stopServer = true;
 				break;
 			} else {
